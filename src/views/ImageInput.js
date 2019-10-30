@@ -5,11 +5,11 @@ import { loadModels, getFullFaceDescription } from '../api/face'
 // Import image to test api
 const testImg = require('../img/test.jpg')
 
-// Instal State
+// Initial State
 const INIT_STATE = {
-    // imageURL: '../img/test.jpg',
     imageURL: testImg,
-    fullDesc: null
+    fullDesc: null,
+    detections: null
 };
 
 class ImageInput extends Component {
@@ -27,14 +27,70 @@ class ImageInput extends Component {
         await getFullFaceDescription(image).then(fullDesc => {
             console.log(fullDesc);
             this.setState({ fullDesc });
+            if (!!fullDesc) {
+                this.setState({
+                    fullDesc,
+                    detections: fullDesc.map(fd => fd.detection)
+                });
+            }
         });
     }
 
+    handleFileChange = async event => {
+        this.resetState();
+        await this.setState({
+            imageURL: URL.createObjectURL(event.target.files[0]),
+            loading: true
+        });
+        this.handleImage();
+    }
+
+    resetState = () => {
+        this.setState({ ...INIT_STATE });
+    }
+
     render() {
-        const { imageURL } = this.state;
+        const { imageURL, detections } = this.state;
+
+        let drawBox = null;
+        if (!!detections) {
+            drawBox = detections.map((detections, i) => {
+                let _H = detections.box.height;
+                let _W = detections.box.width;
+                let _X = detections.box._x;
+                let _Y = detections.box._y;
+                return (
+                    <div key={i}>
+                        <div 
+                            style={{
+                                position: 'absolute',
+                                border: 'solid',
+                                borderColor: 'blue',
+                                height: _H,
+                                width: _W,
+                                transform: `translate(${_X}px,${_Y}px)`
+                            }}
+                        />
+                    </div>
+                );
+
+            });
+        }
+
         return (
             <div>
-                <img src={imageURL} alt="imageURL" />
+                <input 
+                    id="myFileUpload"
+                    type="file"
+                    onChange={this.handleFileChange}
+                    accept=".jpg, .jpeg, .png"
+                />
+                <div stype={{ position: 'relative' }}>
+                    <div style={{ position: 'absolute' }}>
+                        <img src={imageURL} alt="imageURL" />
+                    </div>
+                    {!!drawBox ? drawBox : null}
+                </div>
             </div>
         )
     }
