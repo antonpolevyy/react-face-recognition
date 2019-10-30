@@ -13,7 +13,7 @@ export default class App extends Component {
     return (
       <div className="App">
         {/* <Router history={createHistory()}> */}
-        <Router history={createBrowserHistory()}>
+        <Router history={createBrowserHistory({ basename: process.env.PUBLIC_URL })}>
           <div className='route'>
             <Route exact path='/' component={Home} />
             <Route exact path='/photo' component={ImageInput} />
