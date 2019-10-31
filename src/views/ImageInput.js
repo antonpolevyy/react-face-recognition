@@ -63,8 +63,8 @@ class ImageInput extends Component {
         this.setState({ ...INIT_STATE });
     }
 
-    render() {
-        const { imageURL, detections, match } = this.state;
+    drawBoxes = () => {
+        const { detections, match } = this.state;
 
         let drawBox = null;
         if (!!detections) {
@@ -106,6 +106,11 @@ class ImageInput extends Component {
 
             });
         }
+        return drawBox;
+    }
+
+    render() {
+        const { imageURL, detections } = this.state;
 
         return (
             <div>
@@ -115,11 +120,11 @@ class ImageInput extends Component {
                     onChange={this.handleFileChange}
                     accept=".jpg, .jpeg, .png"
                 />
-                <div stype={{ position: 'relative' }}>
+                <div style={{ position: 'relative' }}>
                     <div style={{ position: 'absolute' }}>
                         <img src={imageURL} alt="imageURL" />
                     </div>
-                    {!!drawBox ? drawBox : null}
+                    { detections ? this.drawBoxes() : null }
                 </div>
             </div>
         )

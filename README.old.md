@@ -7,3 +7,11 @@ https://github.com/supachaic/react-face-recognition
 
 weights for face detection were taken from face-api.js/weights
 https://github.com/justadudewhohacks/face-api.js/tree/master/weights
+
+
+If you try 
+'''$ npm run deploy '''
+for the second time and get the error 'fatal: A branch named 'gh-pages' already exists.'
+
+try deleting the .cache folder in node_modules/gh-pages/
+'''$ rm -rf node_modules/gh-pages/.cache'''
